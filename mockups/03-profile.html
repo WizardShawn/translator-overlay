@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game Profile Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<link rel="stylesheet" href="app.css">
+<style>
+  .cols { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  .form { display: grid; gap: 22px; min-width: 0; }
+  .row3 { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .jp { font-family: var(--game-jp); }
+  table.t td:first-child, table.t th:first-child { white-space: nowrap; }
+  td .who { color: var(--muted); font-size: 12.5px; }
+  td .say { color: var(--muted); font-size: 12.5px; }
+  .rules { display: grid; gap: 10px; padding: 14px 16px; }
+  .rules .toggle { font-size: 13px; }
+
+  /* request preview */
+  .req { position: sticky; top: 16px; display: grid; gap: 12px; }
+  .layers { display: grid; }
+  .layer { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; padding: 11px 14px; align-items: start; }
+  .layer + .layer { border-top: 1px solid var(--line-soft); }
+  .layer .n { font: 600 11px/20px var(--mono); color: var(--subtle); }
+  .layer b { font-weight: 500; display: block; }
+  .layer small { color: var(--muted); font-size: 12px; display: block; }
+  .layer .tok { font: 500 12px/20px var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
+  .layer.live { background: #f3c74f0d; }
+  .crop {
+    margin-top: 8px; background: #141a35; border: 1px dashed #f3c74f88; border-radius: 4px; padding: 8px 10px;
+    font: 500 13px/1.6 var(--game-jp); color: #f4f1e8;
+  }
+  pre.json {
+    margin: 0; padding: 12px 14px; font: 12px/1.6 var(--mono); color: var(--muted); white-space: pre-wrap; word-break: break-word;
+  }
+  pre.json .k { color: var(--info); } pre.json .s { color: var(--fg); } pre.json .b { color: var(--sub); }
+  .total { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+  .total b { color: var(--fg); font-weight: 600; }
+  .draft { padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 18px; align-items: center; border-color: #7ea9f455; }
+  .draft .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--info); font-weight: 600; }
+  .draft p { margin: 2px 0 0; color: var(--muted); max-width: 76ch; font-size: 13px; }
+  .draft .src { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  @media (max-width: 760px) { .draft { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 1080px) { .cols { grid-template-columns: minmax(0, 1fr); } .req { position: static; } }
+  @media (max-width: 600px) { .row3 { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<header class="mock-head">
+  <div class="crumb"><a href="index.html">Translator Overlay mockups</a> / 3 · Game profile</div>
+  <nav aria-label="Mockup screens">
+    <a href="01-setup.html">1 Setup</a><a href="02-games.html">2 Games</a><a href="03-profile.html" aria-current="page">3 Profile</a><a href="04-overlay.html">4 Overlay</a><a href="05-session.html">5 Session</a><a href="06-settings.html">6 Settings</a>
+  </nav>
+</header>
+
+<div class="window">
+  <div class="titlebar">
+    <svg class="logo" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="10" height="8" rx="1.5" style="fill:none;stroke:var(--muted)" stroke-width="1.3"/><rect x="5" y="6" width="10" height="8" rx="1.5" style="fill:var(--sub)"/></svg>
+    <span>Translator Overlay</span><span class="grow"></span>
+    <div class="ctl"><span>—</span><span>▢</span><span>✕</span></div>
+  </div>
+  <div class="app">
+    <aside class="side">
+      <a href="02-games.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="4" width="13" height="8" rx="3"/><path d="M5 6.5v3M3.5 8h3"/></svg>Games</a>
+      <a href="03-profile.html" aria-current="page"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 2.5h7.5a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2z"/><path d="M3 11.5a2 2 0 0 1 2-2h7.5"/></svg>Game profile</a>
+      <a href="05-session.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h12M2 8h9M2 12h11"/></svg>Live session</a>
+      <a href="06-settings.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h7M12 4h2M2 12h2M7 12h7"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="12" r="1.5"/></svg>Settings</a>
+      <div class="spacer"></div>
+      <div class="runstate"><span class="chip ok"><span class="dot"></span>Overlay running</span><span><b class="jp">灯守の町</b> · JA → 中文</span><span><kbd>F8</kbd> pause · <kbd>Alt</kbd> original</span></div>
+    </aside>
+
+    <main class="main">
+      <div class="pagehead">
+        <div>
+          <h1><span class="jp">灯守の町</span> profile</h1>
+          <p>Background the model reads before every line. It was drafted for you and stays cached, so it adds almost nothing to each request.</p>
+        </div>
+        <div class="actions"><button class="btn primary" type="button">Save profile</button></div>
+      </div>
+
+      <div class="box draft">
+        <div>
+          <div class="eyebrow">Drafted automatically</div>
+          <p>Written the first time you played, from a web search on the title screen and the game's executable. Updated in the background as new characters spoke. Anything you edit is locked and never changed again.</p>
+          <div class="src"><span class="chip info">vndb.org</span><span class="chip info">store.steampowered.com</span><span class="chip">+2 characters and 19 terms while playing</span></div>
+        </div>
+        <div class="actions"><button class="btn" type="button">See what changed</button><button class="btn ghost" type="button">Draft again</button></div>
+      </div>
+
+      <div class="cols">
+        <div class="form">
+          <section class="section">
+            <h2>Basics</h2>
+            <div class="row3">
+              <div class="field"><label for="title">Title</label><input class="input" id="title" value="灯守の町 (Hitomori no Machi)"></div>
+              <div class="field"><label for="from">Game language</label><select class="input" id="from"><option>Japanese</option></select></div>
+              <div class="field"><label for="to">Translate into</label><select class="input" id="to"><option>简体中文</option><option>English</option></select></div>
+            </div>
+            <div class="field"><label for="tone">Genre and tone</label><input class="input" id="tone" value="Mystery visual novel. Quiet, melancholic, small-town summer. Dialogue is intimate and understated."></div>
+            <div class="field">
+              <label for="story">Story so far</label>
+              <textarea class="input" id="story" rows="4">Aoi returns to her riverside hometown after seven years for the Yowatari, the one night when the lanterns on Sakaibashi Bridge must burn until dawn. Her childhood friend Minato is waiting for her, and remembers a promise she has forgotten. The town's guardian spirit, Lady Hitomori, speaks only through the lanterns.</textarea>
+              <span class="hint">No spoilers needed. A paragraph about the setting and the cast is enough.</span>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head"><h2>Characters</h2><button class="btn sm" type="button">Add character</button></div>
+            <div class="box scroll-x">
+              <table class="t">
+                <thead><tr><th>In game</th><th>Written as</th><th>Who</th><th>How they speak</th></tr></thead>
+                <tbody>
+                  <tr><td class="jp">湊</td><td><span class="cjk">湊</span> · Minato</td><td class="who">Childhood friend, 17</td><td class="say">Casual and teasing. Trails off with 「……」 when serious.</td></tr>
+                  <tr><td class="jp">葵</td><td><span class="cjk">葵</span> · Aoi</td><td class="who">Protagonist, the player</td><td class="say">Plain. Polite to adults.</td></tr>
+                  <tr><td class="jp">灯守様</td><td><span class="cjk">灯守大人</span> · Lady Hitomori</td><td class="who">Guardian spirit</td><td class="say">Archaic and formal. Use classical phrasing in Chinese.</td></tr>
+                  <tr><td class="jp">鷺沼先生</td><td><span class="cjk">鹭沼老师</span> · Ms. Saginuma</td><td class="who">Teacher</td><td class="say">Formal keigo.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head"><h2>Glossary</h2><span class="hint">23 terms · 4 from the first draft, 19 seen in game</span></div>
+            <div class="box scroll-x">
+              <table class="t">
+                <thead><tr><th>In game</th><th>Always write</th><th>Note</th><th>Source</th></tr></thead>
+                <tbody>
+                  <tr><td class="jp">夜渡り</td><td><span class="cjk">夜渡</span> · Yowatari</td><td class="say">Festival night. Keep as a name.</td><td><span class="chip sub">You set</span></td></tr>
+                  <tr><td class="jp">境橋</td><td><span class="cjk">境桥</span> · Sakaibashi Bridge</td><td class="say">Place name.</td><td><span class="chip info">Web search</span></td></tr>
+                  <tr><td class="jp">灯籠</td><td><span class="cjk">灯笼</span> · lantern</td><td class="say"></td><td><span class="chip">Seen in game</span></td></tr>
+                  <tr><td class="jp">灯守</td><td><span class="cjk">灯守</span> · lamp-keeper</td><td class="say">Title of the spirit and of the town.</td><td><span class="chip">Seen in game</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section">
+            <h2>Style rules</h2>
+            <div class="box rules">
+              <label class="toggle" for="r1"><input type="checkbox" id="r1" checked> Keep 「……」 pauses and stammers</label>
+              <label class="toggle" for="r2"><input type="checkbox" id="r2" checked> Keep honorifics as 大人 / 老师 instead of dropping them</label>
+              <label class="toggle" for="r3"><input type="checkbox" id="r3" checked> Leave numbers, stats and button glyphs untouched</label>
+              <label class="toggle" for="r4"><input type="checkbox" id="r4"> Shorten freely when the translation would overflow its box</label>
+            </div>
+          </section>
+        </div>
+
+        <aside class="req">
+          <div class="section-head"><h2>What the model receives</h2><span class="chip info">Line #3 on screen now</span></div>
+          <div class="box layers">
+            <div class="layer"><span class="n">1</span><div><b>Translation rules</b><small>Fixed by the app. Output JSON only.</small></div><span class="tok">620 · cached</span></div>
+            <div class="layer"><span class="n">2</span><div><b>This profile</b><small>Story, characters, style rules</small></div><span class="tok">1,840 · cached</span></div>
+            <div class="layer"><span class="n">3</span><div><b>Glossary</b><small>23 terms</small></div><span class="tok">410 · cached</span></div>
+            <div class="layer live"><span class="n">4</span><div><b>Recent dialogue</b><small>Last 12 lines, original and translation, with speakers</small></div><span class="tok">680</span></div>
+            <div class="layer live"><span class="n">5</span><div><b>Text on screen</b><small>1 cropped image · 812 × 164 px</small>
+              <div class="crop">「この町の灯籠はね、夜渡りが終わるまで消しちゃいけないんだ。……約束、まだ覚えてる？」</div></div><span class="tok">≈ 260</span></div>
+            <div class="total"><span>Per request <b class="num">3,810</b> tokens, <b class="num">2,870</b> of them cached</span><span>≈ 1.2 s</span></div>
+          </div>
+
+          <h2>What comes back</h2>
+          <div class="box">
+<pre class="json">{
+  <span class="k">"regions"</span>: [{
+    <span class="k">"id"</span>: <span class="b">3</span>,
+    <span class="k">"speaker"</span>: <span class="s">"湊"</span>,
+    <span class="k">"source"</span>: <span class="s">"「この町の灯籠はね、夜渡りが…」"</span>,
+    <span class="k">"text"</span>: <span class="s">"“这座镇上的灯笼啊，在夜渡结束之前…”"</span>,
+    <span class="k">"is_text"</span>: <span class="b">true</span>
+  }],
+  <span class="k">"new_terms"</span>: []
+}</pre>
+          </div>
+          <p class="hint" style="margin:0">The app draws each translation at the box it found itself, so the model never has to guess positions. The source text it returns becomes the cache key.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="mock-note">
+  <p>This is the request structure you described: rules, game profile, then the text crops, plus the recent dialogue that keeps pronouns and tone right. The three stable layers sit at the front so the provider can cache them.</p>
+</div>
+</body>
+</html>

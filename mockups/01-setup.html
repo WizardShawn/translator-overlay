@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>First Run Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<link rel="stylesheet" href="app.css">
+<style>
+  .window { max-width: 980px; }
+  .wiz { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 600px; }
+  .steps { border-right: 1px solid var(--line-soft); padding: 22px 18px; display: grid; gap: 4px; align-content: start; }
+  .steps .brand { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .step { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; padding: 9px 8px; border-radius: var(--r); }
+  .step .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 11px var(--mono); border: 1px solid var(--line); color: var(--muted); }
+  .step b { font-weight: 500; font-size: 13.5px; display: block; }
+  .step small { font-size: 12px; color: var(--subtle); display: block; }
+  .step.done .n { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+  .step.cur { background: var(--panel); }
+  .step.cur .n { background: var(--sub); border-color: var(--sub); color: var(--sub-ink); }
+  .step.cur small { color: var(--muted); }
+
+  .pane { padding: 26px 30px; display: grid; gap: 20px; align-content: start; min-width: 0; }
+  .pane h1 { font-size: 22px; margin: 0; font-weight: 600; text-wrap: balance; }
+  .pane > div > p { margin: 6px 0 0; color: var(--muted); max-width: 62ch; }
+  .check { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 4px 12px; padding: 14px 16px; align-items: start; }
+  .check + .check { border-top: 1px solid var(--line-soft); }
+  .check .ic { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--ui); margin-top: 1px; }
+  .check .ic.ok { background: var(--ok-soft); color: var(--ok); }
+  .check .ic.bad { background: var(--bad-soft); color: var(--bad); }
+  .check b { font-weight: 500; }
+  .check small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; max-width: 60ch; }
+  .check.fail { background: #ee6f6f0d; }
+  .fix { grid-column: 2 / 4; margin-top: 8px; display: grid; gap: 10px; }
+  .fix ol { margin: 0; padding-left: 18px; color: var(--fg); font-size: 13px; display: grid; gap: 4px; }
+  .fix .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .summary { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); }
+  .summary b { color: var(--fg); font-weight: 500; }
+  .foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding-top: 4px; }
+  @media (max-width: 760px) {
+    .wiz { grid-template-columns: minmax(0, 1fr); }
+    .steps { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+    .pane { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="mock-head" style="max-width:980px">
+  <div class="crumb"><a href="index.html">Translator Overlay mockups</a> / 1 · First-run setup</div>
+  <nav aria-label="Mockup screens">
+    <a href="01-setup.html" aria-current="page">1 Setup</a><a href="02-games.html">2 Games</a><a href="03-profile.html">3 Profile</a><a href="04-overlay.html">4 Overlay</a><a href="05-session.html">5 Session</a><a href="06-settings.html">6 Settings</a>
+  </nav>
+</header>
+
+<div class="window">
+  <div class="titlebar">
+    <svg class="logo" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="10" height="8" rx="1.5" style="fill:none;stroke:var(--muted)" stroke-width="1.3"/><rect x="5" y="6" width="10" height="8" rx="1.5" style="fill:var(--sub)"/></svg>
+    <span>Translator Overlay · Setup</span><span class="grow"></span>
+    <div class="ctl"><span>—</span><span>✕</span></div>
+  </div>
+  <div class="wiz">
+    <nav class="steps" aria-label="Setup steps">
+      <div class="brand">Four steps, about two minutes.</div>
+      <div class="step done"><span class="n">✓</span><div><b>Translation model</b><small>Gemini 3.8 Flash · key saved</small></div></div>
+      <div class="step done"><span class="n">✓</span><div><b>Languages</b><small>Japanese → 简体中文</small></div></div>
+      <div class="step cur"><span class="n">3</span><div><b>Check the game window</b><small>Can the overlay draw on it?</small></div></div>
+      <div class="step"><span class="n">4</span><div><b>Try it</b><small>Translate one test screen</small></div></div>
+    </nav>
+
+    <div class="pane">
+      <div>
+        <h1>Check the game window</h1>
+        <p>Start your game and leave it on any screen with text. The app checks that it can see the game and draw over it without the game noticing.</p>
+      </div>
+
+      <div class="box">
+        <div class="check"><span class="ic ok">✓</span><div><b>Found <span style="font-family:var(--game-jp)">灯守の町</span></b><small>hitomori.exe · 1920 × 1080 on Display 1</small></div><span class="chip ok">OK</span></div>
+        <div class="check"><span class="ic ok">✓</span><div><b>Overlay is invisible to screen capture</b><small>So the app never reads its own translations back. Screenshots and recordings won't show it either.</small></div><span class="chip ok">OK</span></div>
+        <div class="check fail"><span class="ic bad">!</span><div><b>The game is in exclusive fullscreen</b><small>Windows lets nothing draw over exclusive fullscreen, so the translations would be hidden.</small></div><span class="chip bad">Fix needed</span>
+          <div class="fix">
+            <ol>
+              <li>In the game, open the video or display settings.</li>
+              <li>Set the screen mode to Borderless window or Fullscreen window.</li>
+              <li>Come back here and check again.</li>
+            </ol>
+            <div class="row"><button class="btn primary" type="button">Check again</button><button class="btn ghost" type="button">This game has no such option</button></div>
+          </div>
+        </div>
+        <div class="check"><span class="ic ok">✓</span><div><b>No anti-cheat driver found</b><small>Some online games treat unknown overlays as cheats. This one runs offline with no anti-cheat.</small></div><span class="chip ok">OK</span></div>
+      </div>
+
+      <div class="summary"><span>Model <b>Gemini 3.8 Flash</b></span><span>Key <b>stored in Windows Credential Manager</b></span><span>Languages <b>Japanese → 简体中文</b></span></div>
+
+      <div class="foot"><button class="btn ghost" type="button">Back</button><button class="btn" type="button" disabled style="opacity:.5;cursor:not-allowed">Next: try it</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="mock-note" style="max-width:980px">
+  <p>Shown at step 3 with the most common problem. Exclusive fullscreen is the one thing that stops any overlay, so the app catches it before the first session instead of failing silently in game.</p>
+</div>
+</body>
+</html>

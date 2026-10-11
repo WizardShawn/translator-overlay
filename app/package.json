@@ -1,0 +1,32 @@
+{
+  "name": "translator-overlay",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plays a game in your language: a click-through overlay that reads the game window and paints Gemini translations over the original text (Windows).",
+  "author": "WizardShawn",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WizardShawn/translator-overlay.git"
+  },
+  "os": [
+    "win32"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/unit.js",
+    "test:overlay": "node test/overlay-fit.cjs",
+    "probe": "node test/api-probe.js"
+  },
+  "dependencies": {
+    "koffi": "^3.3.2"
+  },
+  "devDependencies": {
+    "electron": "41.10.7",
+    "playwright-core": "^1.64.0"
+  }
+}

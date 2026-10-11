@@ -1,0 +1,18 @@
+# Dependencies (npm install recreates them)
+node_modules/
+
+# Your Gemini key and what it can see
+config/gemini-key.dpapi.json
+config/available-models.txt
+
+# Your own settings (defaults live in app/src/config.js)
+config/settings.json
+
+# Per-game profiles, translation memory, transcripts and the log
+data/
+
+# Test output
+app/test/fixtures/*.result.json
+
+# Local backups
+*.bak

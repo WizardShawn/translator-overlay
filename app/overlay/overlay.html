@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>Translator Overlay</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+  body { font: 14px/1.3 "Segoe UI", system-ui, sans-serif; }
+  #layer { position: absolute; inset: 0; }
+  .patch { position: absolute; overflow: hidden; display: flex; box-sizing: border-box; background-size: cover; background-position: center; transition: opacity .12s; }
+  .patch > span { display: block; width: 100%; line-height: 1.32; white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal; }
+  .patch { padding: 0 3px; align-items: center; }
+  .patch.kind-dialogue { align-items: flex-start; padding: 2px 3px; }
+  .patch > span { width: auto; max-width: 100%; }
+  .patch.mode-band { border-radius: 6px; padding: 4px 10px; align-items: center; }
+  .patch.mode-band > span { text-align: center !important; }
+  body.peek .patch { opacity: 0; }
+
+  #hud {
+    position: absolute; right: 12px; top: 12px; display: flex; align-items: center; gap: 8px;
+    background: rgba(12, 14, 18, .78); border: 1px solid rgba(255,255,255,.12); color: #e8eaef;
+    font: 500 12px/1 "Segoe UI", system-ui, sans-serif; padding: 6px 11px; border-radius: 99px;
+    opacity: .9; transition: opacity .3s;
+  }
+  #hud .dot { width: 7px; height: 7px; border-radius: 50%; background: #5fcb8e; }
+  #hud[data-state="busy"] .dot { background: #f3c74f; }
+  #hud[data-state="paused"] .dot { background: #616a7b; }
+  #hud[data-state="error"] .dot { background: #ee6f6f; }
+  #hud[data-state="error"] { border-color: rgba(238,111,111,.5); }
+  #hud .sep { width: 1px; height: 12px; background: rgba(255,255,255,.18); }
+  #hud .k { color: #9198a7; font-family: Consolas, monospace; }
+  body.peek #hud #hud-text::after { content: " · original"; }
+
+  /* zone editor */
+  #zones { position: absolute; inset: 0; display: none; }
+  body.editing #zones { display: block; cursor: crosshair; background: rgba(5, 7, 12, .35); }
+  body.editing #layer { opacity: .25; }
+  .zone { position: absolute; border: 2px dashed; border-radius: 4px; font: 600 12px "Segoe UI", sans-serif; padding: 4px 6px; box-sizing: border-box; cursor: pointer; }
+  .zone.ignore { border-color: #ee6f6f; background: rgba(238,111,111,.15); color: #ee6f6f; }
+  .zone.read { border-color: #5fcb8e; background: rgba(95,203,142,.12); color: #5fcb8e; }
+  .zone.drawing { pointer-events: none; }
+  #zonebar {
+    position: absolute; left: 50%; top: 14px; translate: -50% 0; display: flex; gap: 8px; align-items: center;
+    background: #14171d; border: 1px solid #2d3340; border-radius: 10px; padding: 8px 10px; color: #e8eaef;
+    font: 13px "Segoe UI", sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,.5); z-index: 5;
+  }
+  #zonebar button { font: 500 12.5px "Segoe UI", sans-serif; color: #e8eaef; background: #232833; border: 1px solid #2d3340; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+  #zonebar button[aria-pressed="true"] { border-color: #f3c74f; color: #f3c74f; }
+  #zonebar #z-done { background: #f3c74f; color: #1d1704; border-color: #f3c74f; font-weight: 600; }
+  #zonebar label { display: flex; gap: 6px; align-items: center; color: #9198a7; font-size: 12.5px; }
+  #zonebar .hint { color: #9198a7; font-size: 12px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+  <div id="layer"></div>
+  <div id="zones"></div>
+  <div id="zonebar" hidden>
+    <span class="hint">Drag to draw</span>
+    <button type="button" data-tool="ignore" aria-pressed="true">Ignore area</button>
+    <button type="button" data-tool="read" aria-pressed="false">Read area</button>
+    <label><input type="checkbox" id="z-only"> Read only inside read areas</label>
+    <button type="button" id="z-clear">Clear all</button>
+    <button type="button" id="z-cancel">Cancel</button>
+    <button type="button" id="z-done">Done</button>
+  </div>
+  <div id="hud" data-state="ok"><span class="dot"></span><span id="hud-text">Starting</span><span class="sep"></span><span id="hud-pair"></span><span class="sep"></span><span class="k" id="hud-key">F8 pause</span></div>
+  <script src="overlay.js"></script>
+</body>
+</html>

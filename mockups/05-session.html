@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Live Session Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<link rel="stylesheet" href="app.css">
+<style>
+  .jp { font-family: var(--game-jp); }
+  .stats { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+  .stat { flex: 1 1 150px; padding: 12px 16px; display: grid; gap: 2px; }
+  .stat + .stat { border-left: 1px solid var(--line-soft); }
+  .stat span { font-size: 12px; color: var(--muted); }
+  .stat b { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .stat small { font-size: 11.5px; color: var(--subtle); }
+
+  .cols { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+
+  .log { display: grid; }
+  .entry { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 4px 14px; padding: 12px 16px; }
+  .entry + .entry { border-top: 1px solid var(--line-soft); }
+  .entry .time { font: 500 11.5px/20px var(--mono); color: var(--subtle); }
+  .entry .who { font-size: 12px; color: var(--muted); }
+  .entry .src { font: 500 13px/1.6 var(--game-jp); color: var(--muted); }
+  .entry .dst { font: 400 14.5px/1.6 var(--cjk); color: var(--fg); }
+  .entry .meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .entry.now { background: #f3c74f0d; }
+  .entry.edit .dst { color: var(--fg); }
+  .entry .was { font: 13px/1.6 var(--cjk); color: var(--subtle); text-decoration: line-through; }
+  .entry .note { grid-column: 2 / 4; font-size: 12.5px; color: var(--warn); display: flex; gap: 8px; align-items: baseline; }
+  .entry .note > span:first-child { white-space: nowrap; }
+  .editing { grid-column: 2 / 4; display: grid; gap: 8px; margin-top: 4px; }
+  .editing .input { font-family: var(--cjk); font-size: 14px; border-color: var(--sub); }
+  .editing .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  .terms { display: grid; }
+  .term { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; padding: 12px 14px; align-items: center; }
+  .term + .term { border-top: 1px solid var(--line-soft); }
+  .term .pair { font-size: 14px; }
+  .term .pair .jp { margin-right: 6px; }
+  .term small { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+  .term .act { display: flex; gap: 6px; }
+  .side-stack { display: grid; gap: 22px; }
+  @media (max-width: 1080px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 600px) {
+    .entry { grid-template-columns: minmax(0, 1fr); }
+    .entry .meta { flex-direction: row; align-items: center; }
+    .entry .note, .editing { grid-column: 1; }
+    .stat + .stat { border-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="mock-head">
+  <div class="crumb"><a href="index.html">Translator Overlay mockups</a> / 5 · Live session</div>
+  <nav aria-label="Mockup screens">
+    <a href="01-setup.html">1 Setup</a><a href="02-games.html">2 Games</a><a href="03-profile.html">3 Profile</a><a href="04-overlay.html">4 Overlay</a><a href="05-session.html" aria-current="page">5 Session</a><a href="06-settings.html">6 Settings</a>
+  </nav>
+</header>
+
+<div class="window">
+  <div class="titlebar">
+    <svg class="logo" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="10" height="8" rx="1.5" style="fill:none;stroke:var(--muted)" stroke-width="1.3"/><rect x="5" y="6" width="10" height="8" rx="1.5" style="fill:var(--sub)"/></svg>
+    <span>Translator Overlay</span><span class="grow"></span>
+    <div class="ctl"><span>—</span><span>▢</span><span>✕</span></div>
+  </div>
+  <div class="app">
+    <aside class="side">
+      <a href="02-games.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="4" width="13" height="8" rx="3"/><path d="M5 6.5v3M3.5 8h3"/></svg>Games</a>
+      <a href="03-profile.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 2.5h7.5a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2z"/><path d="M3 11.5a2 2 0 0 1 2-2h7.5"/></svg>Game profile</a>
+      <a href="05-session.html" aria-current="page"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h12M2 8h9M2 12h11"/></svg>Live session</a>
+      <a href="06-settings.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h7M12 4h2M2 12h2M7 12h7"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="12" r="1.5"/></svg>Settings</a>
+      <div class="spacer"></div>
+      <div class="runstate"><span class="chip ok"><span class="dot"></span>Overlay running</span><span><b class="jp">灯守の町</b> · JA → 中文</span><span><kbd>F8</kbd> pause · <kbd>Alt</kbd> original</span></div>
+    </aside>
+
+    <main class="main">
+      <div class="pagehead">
+        <div>
+          <h1>Live session</h1>
+          <p>Every line the overlay has translated tonight, newest first. Fix a line here and the game screen updates at once.</p>
+        </div>
+        <div class="actions"><button class="btn" type="button">Pause <kbd>F8</kbd></button><button class="btn" type="button">Export transcript</button></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>Lines translated</span><b>312</b><small>in 47 min</small></div>
+        <div class="stat"><span>Shown from cache</span><b>41%</b><small>menus, names, re-read lines</small></div>
+        <div class="stat"><span>Median wait</span><b>1.18 s</b><small>new text to translation</small></div>
+        <div class="stat"><span>Model cost</span><b>$0.04</b><small>estimate for this session</small></div>
+      </div>
+
+      <div class="cols">
+        <section class="section">
+          <div class="section-head"><h2>Transcript</h2><span class="hint">Click a translation to edit it</span></div>
+          <div class="box log">
+            <div class="entry now">
+              <span class="time">21:40:12</span>
+              <div><div class="who">湊 · Minato</div>
+                <div class="src">「この町の灯籠はね、夜渡りが終わるまで消しちゃいけないんだ。……約束、まだ覚えてる？」</div>
+                <div class="dst">“这座镇上的灯笼啊，在夜渡结束之前，是绝对不能熄灭的。……那个约定，你还记得吗？”</div></div>
+              <div class="meta"><span class="chip sub">On screen</span><span class="mono num" style="color:var(--muted)">1.16 s</span></div>
+            </div>
+
+            <div class="entry edit">
+              <span class="time">21:39:51</span>
+              <div><div class="who">葵 · Aoi</div>
+                <div class="src">「七年ぶり、か。……橋、こんなに短かったっけ」</div>
+                <div class="was">“七年没见了吗。……桥，有这么短吗”</div>
+                <div class="dst">“已经七年了啊。……这座桥，以前有这么短吗？”</div></div>
+              <div class="meta"><span class="chip ok">Edited by you</span><span class="mono num" style="color:var(--muted)">0.98 s</span></div>
+            </div>
+
+            <div class="entry">
+              <span class="time">21:39:34</span>
+              <div><div class="who">灯守様 · Lady Hitomori</div>
+                <div class="src">「灯を絶やすな。火は、ひとの名を覚えておる」</div>
+                <div class="dst">“莫令灯火断绝。火，记得人的名字。”</div></div>
+              <div class="meta"><span class="chip warn">Unsure</span><span class="mono num" style="color:var(--muted)">1.31 s</span></div>
+              <div class="note"><span>Model note:</span><span style="color:var(--muted)">火 and 灯 are both read “hi” here, which may be wordplay on the spirit's name. Kept literal.</span></div>
+            </div>
+
+            <div class="entry">
+              <span class="time">21:39:20</span>
+              <div><div class="who">湊 · Minato</div>
+                <div class="src">「おかえり、葵。……遅いよ」</div>
+                <div class="dst">“欢迎回来，葵。……你来晚了。”</div>
+                <div class="editing">
+                  <input class="input" id="edit-line" value="“欢迎回来，葵。……太慢了啦。”" aria-label="Edit translation">
+                  <div class="row"><button class="btn sm primary" type="button">Save and repaint</button><button class="btn sm ghost" type="button">Cancel</button>
+                    <label class="toggle" for="as-rule" style="font-size:12.5px"><input type="checkbox" id="as-rule"> Also add as a style example for this character</label></div>
+                </div></div>
+              <div class="meta"><span class="chip">Editing</span><span class="mono num" style="color:var(--muted)">1.08 s</span></div>
+            </div>
+
+            <div class="entry">
+              <span class="time">21:39:02</span>
+              <div><div class="who">Menu</div>
+                <div class="src">オート　スキップ　ログ　セーブ</div>
+                <div class="dst">自动　快进　记录　存档</div></div>
+              <div class="meta"><span class="chip ok">Cache</span><span class="mono num" style="color:var(--muted)">4 ms</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="side-stack">
+          <section class="section">
+            <div class="section-head"><h2>New terms</h2><span class="hint">Found this session</span></div>
+            <div class="box terms">
+              <div class="term"><span class="pair"><span class="jp">境橋</span>→ <span class="cjk">境桥</span></span><span class="act"><button class="btn sm" type="button">Keep</button><button class="btn sm ghost" type="button">Change</button></span><small>Place name. Seen 6 times.</small></div>
+              <div class="term"><span class="pair"><span class="jp">灯守様</span>→ <span class="cjk">灯守大人</span></span><span class="act"><button class="btn sm" type="button">Keep</button><button class="btn sm ghost" type="button">Change</button></span><small>Spirit's title. Matches the profile.</small></div>
+              <div class="term"><span class="pair"><span class="jp">送り火</span>→ <span class="cjk">送魂火</span></span><span class="act"><button class="btn sm" type="button">Keep</button><button class="btn sm ghost" type="button">Change</button></span><small>Festival fire for the dead. Seen once.</small></div>
+            </div>
+            <p class="hint" style="margin:0">Kept terms join the glossary and are sent with every later line, so a name never changes mid-game.</p>
+          </section>
+
+          <section class="section">
+            <h2>Screen right now</h2>
+            <div class="box" style="padding:12px 14px;display:grid;gap:8px;font-size:13px">
+              <div style="display:flex;justify-content:space-between;gap:8px"><span style="color:var(--muted)">Regions</span><span>4 · 3 from cache</span></div>
+              <div style="display:flex;justify-content:space-between;gap:8px"><span style="color:var(--muted)">Last request</span><span class="mono num">3,810 tokens · 1.16 s</span></div>
+              <div style="display:flex;justify-content:space-between;gap:8px"><span style="color:var(--muted)">Context sent</span><span>last 12 lines</span></div>
+              <button class="btn sm" type="button" style="justify-self:start;margin-top:4px">Translate again <kbd>F9</kbd></button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="mock-note">
+  <p>Usually on a second monitor or behind the game with <kbd>F10</kbd>. It doubles as a readable script of everything you played, and it is where a wrong translation gets fixed once and stays fixed.</p>
+</div>
+</body>
+</html>

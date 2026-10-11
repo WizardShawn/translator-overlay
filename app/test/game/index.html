@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<title>灯守の町</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+  /* An original test scene for Translator Overlay. Nothing here comes from a real game. */
+  html, body { margin: 0; height: 100%; background: #070915; overflow: hidden; }
+  body { font-family: "Zen Maru Gothic", "Yu Gothic UI", "Meiryo", sans-serif; }
+  .stage { position: absolute; inset: 0; container-type: size; }
+  .sky { position: absolute; inset: 0; background:
+      radial-gradient(1.5px 1.5px at 12% 14%, #fff9 60%, transparent), radial-gradient(1.5px 1.5px at 44% 19%, #fffa 60%, transparent),
+      radial-gradient(1.5px 1.5px at 71% 24%, #fff8 60%, transparent), radial-gradient(1.5px 1.5px at 88% 12%, #fff9 60%, transparent),
+      linear-gradient(#070b24 0%, #141b46 40%, #3b3060 60%, #533b5c 64%, #0b0f24 64.2%, #070915 100%); }
+  .moon { position: absolute; left: 76%; top: 9%; width: 7cqw; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 40% 38%, #fff8e2, #f2e2b0 60%, #d9c38a); box-shadow: 0 0 6cqw 1cqw #f6e7b84d; }
+  .water { position: absolute; left: 0; right: 0; top: 64.2%; bottom: 0; overflow: hidden; }
+  .water::before { content: ""; position: absolute; inset: 0 -20% 0 0; background: repeating-linear-gradient(180deg, transparent 0 0.9cqw, #ffffff0d 0.9cqw 1.05cqw); animation: drift 2.4s linear infinite; }
+  @keyframes drift { to { transform: translateX(-8%); } }
+  .bridge { position: absolute; left: 0; top: 34%; width: 100%; height: 32%; }
+  .lantern { position: absolute; width: 1.5cqw; height: 2.1cqw; border-radius: 40%; translate: -50% -100%;
+    background: radial-gradient(circle at 50% 45%, #ffe6a8, #ff9e3d 60%, #c4581e); box-shadow: 0 0 2.5cqw 0.8cqw #ff9e3d66; animation: flicker 1.3s ease-in-out infinite alternate; }
+  @keyframes flicker { to { box-shadow: 0 0 3.2cqw 1.1cqw #ff9e3d88; } }
+  .sprite { position: absolute; left: 61%; top: 22%; width: 16cqw; height: 50%; transform-origin: 50% 100%; animation: breathe 3.2s ease-in-out infinite; }
+  @keyframes breathe { 50% { transform: scaleY(1.012); } }
+  .sprite .head { position: absolute; left: 31%; top: 0; width: 38%; aspect-ratio: 1; border-radius: 50%; background: #0d1030; box-shadow: inset -0.5cqw 0.2cqw 0 #ffb45a55; }
+  .sprite .body { position: absolute; left: 12%; top: 30%; width: 76%; height: 75%; border-radius: 40% 40% 6% 6%; background: #0d1030; box-shadow: inset -0.6cqw 0.3cqw 0 #ffb45a44; }
+  .dim { position: absolute; inset: 0; background: rgba(4, 6, 18, .58); display: none; }
+
+  .loc { position: absolute; left: 2.5%; top: 4%; width: 15%; height: 6.5%; display: flex; align-items: center; background: #0f1328; border-left: 0.3cqw solid #d4ad55; color: #e9e2cc; font-weight: 700; font-size: 1.3cqw; padding-left: 1cqw; letter-spacing: .1em; box-sizing: border-box; }
+  .box { position: absolute; left: 5%; top: 69%; width: 90%; height: 27%; background: #141a35; border: 1px solid #d4ad5588; border-radius: 0.6cqw; box-shadow: 0 0 0 0.35cqw #0b0f22; }
+  .name { position: absolute; left: 7.5%; top: 64.5%; width: 11%; height: 7.5%; background: #d4ad55; color: #191300; font-weight: 700; font-size: 1.8cqw; display: flex; align-items: center; justify-content: center; border-radius: 0.4cqw; letter-spacing: .12em; }
+  .line { position: absolute; left: 9%; top: 75%; width: 82%; height: 13.5%; color: #f4f1e8; font-weight: 500; font-size: 2.05cqw; line-height: 1.62; }
+  .next { position: absolute; left: 92%; top: 86%; color: #d4ad55; font-size: 1.3cqw; animation: blink 0.8s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .btns { position: absolute; left: 58%; top: 90%; width: 35%; height: 4.5%; display: flex; justify-content: space-around; align-items: center; color: #b9b3a0; font-size: 1.05cqw; letter-spacing: .08em; }
+  .prompt { position: absolute; left: 34%; top: 15%; width: 32%; height: 8%; display: flex; align-items: center; justify-content: center; color: #fff6dc; font-weight: 700; font-size: 2.3cqw; text-shadow: 0 0 1cqw #000c; letter-spacing: .14em; }
+  .choice { position: absolute; left: 27%; width: 46%; height: 9.5%; background: #1b2140; border: 1px solid #d4ad55aa; border-radius: 0.5cqw; display: flex; align-items: center; justify-content: center; color: #f1ead6; font-weight: 500; font-size: 1.75cqw; letter-spacing: .06em; cursor: pointer; }
+  .choice:hover { background: #262d55; }
+  .menu .box, .menu .name, .menu .line, .menu .next, .menu .btns, .menu .sprite { display: none; }
+  .menu .dim { display: block; }
+  .choices { display: none; }
+  .menu .choices { display: block; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="sky"></div><div class="moon"></div><div class="water"></div>
+  <svg class="bridge" viewBox="0 0 100 40" preserveAspectRatio="none">
+    <path d="M-2 30 Q50 6 102 30 L102 35 Q50 11 -2 35Z" fill="#070a18"/>
+    <path d="M-2 24 Q50 0 102 24" fill="none" stroke="#070a18" stroke-width="0.9"/>
+    <rect x="22" y="22" width="2.4" height="18" fill="#060815"/><rect x="75.6" y="22" width="2.4" height="18" fill="#060815"/>
+  </svg>
+  <div class="lantern" style="left:16%;top:48%"></div><div class="lantern" style="left:34%;top:42.6%"></div>
+  <div class="lantern" style="left:50%;top:41.2%"></div><div class="lantern" style="left:66%;top:42.6%"></div><div class="lantern" style="left:84%;top:48%"></div>
+  <div class="sprite"><div class="body"></div><div class="head"></div></div>
+  <div class="dim"></div>
+  <div class="loc">境橋・夜</div>
+  <div class="box"></div>
+  <div class="name" id="name">湊</div>
+  <div class="line" id="line"></div>
+  <div class="next">▼</div>
+  <div class="btns"><span>オート</span><span>スキップ</span><span>ログ</span><span>セーブ</span></div>
+  <div class="choices">
+    <div class="prompt">どうする？</div>
+    <div class="choice" style="top:30%">灯籠を持って、境橋を渡る</div>
+    <div class="choice" style="top:43%">湊が来るのを待つ</div>
+    <div class="choice" style="top:56%">来た道を引き返す</div>
+  </div>
+</div>
+<script>
+  const script = [
+    { s: '湊', t: '「この町の灯籠はね、夜渡りが終わるまで消しちゃいけないんだ。……約束、まだ覚えてる？」' },
+    { s: '葵', t: '「七年ぶり、か。……橋、こんなに短かったっけ」' },
+    { s: '湊', t: '「おかえり、葵。……遅いよ」' },
+    { s: '', t: '川面に映る灯りが、ゆっくりと揺れていた。' },
+    { menu: true },
+    { s: '灯守様', t: '「灯を絶やすな。火は、ひとの名を覚えておる」' },
+    { s: '鷺沼先生', t: '「二人とも、もうすぐ夜渡りが始まりますよ。急ぎなさい」' },
+  ];
+  const q = new URLSearchParams(location.search);
+  const every = Number(q.get('every') || 7000);
+  const stage = document.getElementById('stage');
+  const nameEl = document.getElementById('name'), lineEl = document.getElementById('line');
+  let i = Number(q.get('start') || 0), typing = null;
+  function show() {
+    const step = script[i % script.length];
+    clearInterval(typing);
+    if (step.menu) { stage.classList.add('menu'); return; }
+    stage.classList.remove('menu');
+    nameEl.style.visibility = step.s ? 'visible' : 'hidden';
+    nameEl.textContent = step.s || '';
+    const chars = [...step.t]; let n = 0;
+    lineEl.textContent = '';
+    typing = setInterval(() => { lineEl.textContent = chars.slice(0, ++n).join(''); if (n >= chars.length) clearInterval(typing); }, 40);
+  }
+  function advance() { i++; show(); }
+  document.addEventListener('click', advance);
+  document.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') advance(); });
+  if (every > 0) setInterval(advance, every);
+  document.fonts.ready.then(show);
+</script>
+</body>
+</html>

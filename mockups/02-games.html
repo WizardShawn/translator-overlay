@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<link rel="stylesheet" href="app.css">
+<style>
+  .running { padding: 16px 18px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; border-color: #f3c74f55; }
+  .thumb {
+    width: 112px; aspect-ratio: 16 / 9; border-radius: 5px; position: relative; overflow: hidden;
+    background: linear-gradient(#141b46 0%, #3b3060 58%, #0b0f24 59%, #070915 100%);
+  }
+  .thumb::before { content: ""; position: absolute; left: 70%; top: 14%; width: 14%; aspect-ratio: 1; border-radius: 50%; background: #f2e2b0; }
+  .thumb::after { content: ""; position: absolute; left: 6%; right: 6%; bottom: 7%; height: 26%; background: #141a35; border: 1px solid #d4ad5588; border-radius: 2px; }
+  .running h3 { font-size: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .running h3 .jp { font-family: var(--game-jp); }
+  .running .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .eyebrow .dot { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .35; } }
+
+  .gname { display: grid; gap: 1px; }
+  .gname b { font-weight: 500; }
+  .gname .orig { font-family: var(--game-jp); }
+  .gname .ru { font-family: var(--ui); }
+  .gname span { color: var(--subtle); font-size: 12px; }
+  table.t td.r, table.t th.r { text-align: right; }
+  .pair { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .sel { background: var(--raise); }
+
+  .hk { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); }
+  .hk span { display: inline-flex; gap: 8px; align-items: center; }
+  @media (max-width: 860px) { .running { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<header class="mock-head">
+  <div class="crumb"><a href="index.html">Translator Overlay mockups</a> / 2 · Games</div>
+  <nav aria-label="Mockup screens">
+    <a href="01-setup.html">1 Setup</a><a href="02-games.html" aria-current="page">2 Games</a><a href="03-profile.html">3 Profile</a><a href="04-overlay.html">4 Overlay</a><a href="05-session.html">5 Session</a><a href="06-settings.html">6 Settings</a>
+  </nav>
+</header>
+
+<div class="window">
+  <div class="titlebar">
+    <svg class="logo" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="10" height="8" rx="1.5" style="fill:none;stroke:var(--muted)" stroke-width="1.3"/><rect x="5" y="6" width="10" height="8" rx="1.5" style="fill:var(--sub)"/></svg>
+    <span>Translator Overlay</span><span class="grow"></span>
+    <div class="ctl"><span>—</span><span>▢</span><span>✕</span></div>
+  </div>
+  <div class="app">
+    <aside class="side">
+      <a href="02-games.html" aria-current="page"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="4" width="13" height="8" rx="3"/><path d="M5 6.5v3M3.5 8h3"/></svg>Games</a>
+      <a href="03-profile.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 2.5h7.5a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2z"/><path d="M3 11.5a2 2 0 0 1 2-2h7.5"/></svg>Game profile</a>
+      <a href="05-session.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h12M2 8h9M2 12h11"/></svg>Live session</a>
+      <a href="06-settings.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h7M12 4h2M2 12h2M7 12h7"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="12" r="1.5"/></svg>Settings</a>
+      <div class="spacer"></div>
+      <div class="runstate"><span class="chip"><span class="dot"></span>Overlay off</span><span>Gemini 3.8 Flash</span><span>Press <kbd>F8</kbd> in game to start</span></div>
+    </aside>
+
+    <main class="main">
+      <div class="pagehead">
+        <div>
+          <h1>Games</h1>
+          <p>Each game keeps its own profile, glossary and translation cache. Start the overlay on the game that is running now.</p>
+        </div>
+        <div class="actions"><button class="btn" type="button">Add a game</button></div>
+      </div>
+
+      <div class="box running">
+        <div class="thumb" aria-hidden="true"></div>
+        <div>
+          <div class="eyebrow"><span class="dot"></span>Running now</div>
+          <h3><span class="jp">灯守の町</span><span style="color:var(--muted);font-weight:400">Hitomori no Machi</span></h3>
+          <div class="sub">hitomori.exe · 1920 × 1080 · Japanese → 简体中文</div>
+          <div class="checks">
+            <span class="chip ok"><span class="dot"></span>Borderless window</span>
+            <span class="chip ok"><span class="dot"></span>Overlay hidden from capture</span>
+            <span class="chip ok"><span class="dot"></span>No anti-cheat found</span>
+            <span class="chip sub">4,812 lines cached</span>
+          </div>
+        </div>
+        <div class="actions" style="flex-direction:column;align-items:stretch">
+          <button class="btn primary" type="button">Start overlay <kbd style="background:transparent;border-color:#1d170455;color:var(--sub-ink)">F8</kbd></button>
+          <button class="btn ghost" type="button">Use a different window</button>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="section-head"><h2>Library</h2><span class="hint">Sorted by last played</span></div>
+        <div class="box scroll-x">
+          <table class="t">
+            <thead><tr><th>Game</th><th>Languages</th><th>Profile</th><th class="r">Lines cached</th><th>Last played</th><th></th></tr></thead>
+            <tbody>
+              <tr class="sel">
+                <td><div class="gname"><b class="orig">灯守の町</b><span>Hitomori no Machi · visual novel</span></div></td>
+                <td class="pair">JA → ZH</td>
+                <td><span class="chip ok">Complete · 23 terms</span></td>
+                <td class="r num">4,812</td><td>Today, 21:40</td>
+                <td><a class="btn sm" href="03-profile.html">Edit profile</a></td>
+              </tr>
+              <tr>
+                <td><div class="gname"><b class="orig">鉄血のアルカディア</b><span>Tekketsu no Arcadia · tactics RPG</span></div></td>
+                <td class="pair">JA → ZH</td>
+                <td><span class="chip ok">Complete · 86 terms</span></td>
+                <td class="r num">12,390</td><td>3 days ago</td>
+                <td><button class="btn sm" type="button">Edit profile</button></td>
+              </tr>
+              <tr>
+                <td><div class="gname"><b class="ru">Сталь и пепел</b><span>Steel and Ash · CRPG</span></div></td>
+                <td class="pair">RU → ZH</td>
+                <td><span class="chip warn">Draft · no characters yet</span></td>
+                <td class="r num">640</td><td>22 Sep</td>
+                <td><button class="btn sm" type="button">Edit profile</button></td>
+              </tr>
+              <tr>
+                <td><div class="gname"><b class="orig">검은 별의 기록</b><span>Records of the Black Star · strategy</span></div></td>
+                <td class="pair">KO → EN</td>
+                <td><span class="chip info">Drafts on first play</span></td>
+                <td class="r num">0</td><td>Never</td>
+                <td><button class="btn sm" type="button">Edit profile</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>In-game keys</h2>
+        <div class="hk">
+          <span><kbd>F8</kbd> Start or pause</span>
+          <span><kbd>Alt</kbd> hold to see the original</span>
+          <span><kbd>F9</kbd> Translate this screen again</span>
+          <span><kbd>F10</kbd> Open the session log</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="mock-note">
+  <p>The app opens here. It spots the game you are running, checks that an overlay can draw over it, and starts with one key. A new game gets its profile drafted automatically the first time you play it, so nothing has to be written by hand.</p>
+</div>
+</body>
+</html>
